@@ -110,7 +110,7 @@ INSERT INTO vehiculos (ruta_id, placa, modelo, capacidad_asientos, capacidad_par
 -- =================================================================
 -- INSERTAR MÉTRICAS
 -- =================================================================
-INSERT INTO metricas (ruta_id, fecha, usuarios_totales, ocupacion_promedio_porcentaje, tiempo_promedio_recorrido_min, combustible_consumido_litros, vehiculos_utilizados, paradas_completadas, incidentes, demoras_promedio_min, satisfaccion_usuarios) VALUES
+INSERT INTO metricas (ruta_id, fecha, usuarios_totales, ocupacion_promedio_porcentaje, tiempo_promedio_recorrido_min, combustible_consumido_litros, vehiculos_utilizados, paradas_completadas, incidentes, demoras_promedio_min) VALUES
 (1, '2025-02-07', 850, 78.5, 36, 45.3, 2, 20, 0, 2, 4.5),
 (2, '2025-02-07', 650, 72.3, 46, 38.2, 2, 18, 1, 3, 4.3),
 (3, '2025-02-07', 920, 85.2, 57, 52.1, 2, 16, 0, 1, 4.6),
@@ -118,21 +118,11 @@ INSERT INTO metricas (ruta_id, fecha, usuarios_totales, ocupacion_promedio_porce
 (5, '2025-02-07', 320, 58.3, 26, 18.9, 1, 12, 0, 1, 4.2);
 
 -- =================================================================
--- INSERTAR SIMULACIONES
--- =================================================================
-INSERT INTO simulaciones (ruta_id, usuario_id, nombre_simulacion, descripcion, paradas_propuestas, tiempo_estimado_min, ahorro_combustible_porcentaje, ahorro_tiempo_porcentaje, impacto_usuarios_estimado, estado) VALUES
-(1, 1, 'Optimización Centro-Fundadores', 'Propuesta de reordenar paradas para mejorar fluidez', 9, 32, 8.5, 11.0, 'Positivo: menos tiempo de espera', 'pendiente_revision'),
-(2, 2, 'Ajuste Palogrande-Villamaría', 'Eliminación de parada duplicada', 8, 42, 12.0, 8.0, 'Positivo: más eficiente', 'aprobada'),
-(3, 1, 'Expansión Zona Industrial', 'Agregar parada de carga/descarga', 9, 60, -5.0, 3.0, 'Neutral: mejora operacional', 'borrador');
-
--- =================================================================
 -- INSERTAR REPORTES
 -- =================================================================
 INSERT INTO reportes (usuario_id, tipo_reporte, titulo, contenido, ruta_id, periodo_desde, periodo_hasta, estado) VALUES
 (1, 'diario', 'Reporte Diario Ruta Centro-Fundadores', 'Análisis de operaciones del día 7 de febrero', 1, '2025-02-07', '2025-02-07', 'generado'),
 (2, 'semanal', 'Reporte Semanal Palogrande-Villamaría', 'Análisis de la semana del 3 al 7 de febrero', 2, '2025-02-03', '2025-02-07', 'generado'),
-(1, 'customizado', 'Análisis de Combustible Mensual', 'Estudio de consumo en todas las rutas', NULL, '2025-01-01', '2025-02-07', 'enviado');
-
 
 -- =================================================================
 -- INSERTAR ZONAS CRÍTICAS

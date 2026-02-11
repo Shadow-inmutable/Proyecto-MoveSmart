@@ -1,0 +1,172 @@
+@startuml moveSmartClassDiagram
+
+title MOVE SMART - Diagrama de Clases
+header Product Owner: Brandon Berrio / Ángel Camilo
+header Developers: Brandon Berrio / Ángel Camilo
+footer Febrero 2026
+
+skinparam classAttributeIconSize 0
+skinparam style strictuml
+
+' =========================
+' CLASE BASE USUARIO
+' =========================
+abstract class Usuario {
+  - id: int
+  - nombre: string
+  - email: string
+  - password: string
+  - rol: enum
+  - activo: boolean
+  - created_at: timestamp
+  + login(): boolean
+  + logout(): void
+  + obtenerPerfil(): Usuario
+}
+
+class Ciudadano {
+  + visualizarRutas(): List<Ruta>
+  + visualizarParadas(): List<Parada>
+  + visualizarZonasCriticas(): List<ZonaCritica>
+  + navegarMapa(): void
+}
+
+class Analista {
+  + crearRuta(): Ruta
+  + actualizarRuta(): Ruta
+  + eliminarRuta(): boolean
+  + gestionarParadas(): void
+  + definirZonasCriticas(): void
+  + ejecutarAnalisis(): Analisis
+  + compararMetricas(): Comparacion
+  + generarReportes(): Reporte
+}
+
+class Administrador {
+  + gestionarUsuarios(): List<Usuario>
+  + asignarRoles(): boolean
+  + cambiarEstadoUsuario(): boolean
+  + eliminarDatos(): boolean
+  + auditarOperaciones(): List<Auditoria>
+  + verLogs(): List<Log>
+  + configurarSistema(): void
+  + realizarBackup(): void
+}
+
+Usuario <|-- Ciudadano
+Usuario <|-- Analista
+Usuario <|-- Administrador
+
+' =========================
+' ENTIDADES DEL DOMINIO
+' =========================
+class Ruta {
+  - id: int
+  - nombre: string
+  - tipo: string
+  - origen: string
+  - destino: string
+  - distancia_km: decimal
+  - tiempo_estimado_min: int
+  - color_hex: string
+  - estado: enum
+  + calcularDistancia(): decimal
+  + calcularTiempo(): int
+}
+
+class Parada {
+  - id: int
+  - ruta_id: int
+  - nombre: string
+  - latitud: decimal
+  - longitud: decimal
+  - orden: int
+  + obtenerCoordenadas(): object
+}
+
+class ZonaCritica {
+  - id: int
+  - nombre: string
+  - nivel_congestion: enum
+  - latitud: decimal
+  - longitud: decimal
+  - color_hex: string
+  + actualizarNivel(): void
+}
+
+class Vehiculo {
+  - id: int
+  - ruta_id: int
+  - placa: string
+  - capacidad_total: int
+  - estado: enum
+  + cambiarEstado(): void
+}
+
+class Metrica {
+  - id: int
+  - ruta_id: int
+  - fecha: date
+  - usuarios_totales: int
+  - ocupacion_promedio: decimal
+  - tiempo_promedio: int
+  - combustible_consumido: decimal
+  + calcularEficiencia(): decimal
+}
+
+class Reporte {
+  - id: int
+  - tipo: enum
+  - periodo_inicio: date
+  - periodo_fin: date
+  - generado_por: int
+  + exportarPDF(): file
+  + exportarCSV(): file
+}
+
+' =========================
+' RELACIONES
+' =========================
+Ruta "1" o-- "*" Parada
+Ruta "1" o-- "*" Vehiculo
+Ruta "1" o-- "*" Metrica
+Ruta "*" -- "*" ZonaCritica
+Analista "1" -- "*" Ruta : gestiona
+Administrador "1" -- "*" Usuario : administra
+Reporte "*" -- "1" Usuario : generado_por
+
+' =========================
+' NOTAS EXPLICATIVAS
+' =========================
+note bottom of Ciudadano
+  **Acceso Limitado: Solo Lectura**
+  - Habitante de Manizales
+  - Usuario de transporte público
+  - Frontend público (Web/App)
+  - No modifica información
+end note
+
+note bottom of Analista
+  **Acceso Operativo: CRUD**
+  - Secretaría de Movilidad
+  - Empresas operadoras
+  - Planeadores urbanos
+  - Panel interno React
+  - CRUD + Análisis
+end note
+
+note bottom of Administrador
+  **Acceso Total: Administración**
+  - Equipo técnico / TI
+  - Desarrolladores del sistema
+  - No toma decisiones de movilidad
+  - Administra usuarios y seguridad
+end note
+
+note bottom of Ruta
+  Estados posibles:
+  - actual: Ruta en operación
+  - optimizada: Ruta mejorada
+end note
+
+@enduml

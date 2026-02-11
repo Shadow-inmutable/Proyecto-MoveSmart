@@ -1,0 +1,137 @@
+@startuml moveSmartUseCaseDiagram
+
+title MOVE SMART - Diagrama de Casos de Uso
+header Product Owner: Brandon Berrio / Ángel Camilo
+header Developers: Brandon Berrio / Ángel Camilo
+footer Febrero 2026
+
+left to right direction
+skinparam actorStyle awesome
+
+' =========================
+' ACTORES
+' =========================
+actor "👥 Ciudadano" as Ciudadano
+actor "👤 Analista" as Analista
+actor "👑 Administrador" as Administrador
+
+' =========================
+' SISTEMA
+' =========================
+rectangle "🗺️ MOVE SMART - Sistema de Análisis de Movilidad" {
+
+  package "🔐 Autenticación" {
+    usecase UC_LOGIN as "Iniciar Sesión"
+    usecase UC_LOGOUT as "Cerrar Sesión"
+    usecase UC_CHPWD as "Cambiar Contraseña"
+  }
+
+  package "👥 Funcionalidades Ciudadano" {
+    usecase UC_VER_RUTAS as "Visualizar Rutas"
+    usecase UC_VER_PARADAS as "Visualizar Paradas"
+    usecase UC_VER_ZONAS as "Visualizar Zonas Críticas"
+    usecase UC_MAPA as "Navegar Mapa Interactivo"
+    usecase UC_FILTRAR as "Filtrar Rutas"
+    usecase UC_DETALLE as "Ver Detalle de Ruta"
+  }
+
+  package "👤 Funcionalidades Analista" {
+    usecase UC_CRUD_RUTA as "Gestionar Rutas (CRUD)"
+    usecase UC_PARADAS as "Gestionar Paradas"
+    usecase UC_ZONAS as "Definir Zonas Críticas"
+    usecase UC_ANALISIS as "Ejecutar Análisis de Movilidad"
+    usecase UC_SIMULACION as "Ejecutar Simulación"
+    usecase UC_METRICAS as "Comparar Métricas"
+    usecase UC_REPORTES as "Generar Reportes"
+    usecase UC_EXPORTAR as "Exportar Datos"
+  }
+
+  package "👑 Funcionalidades Administrador" {
+    usecase UC_USUARIOS as "Gestionar Usuarios"
+    usecase UC_ROLES as "Asignar Roles"
+    usecase UC_ESTADO as "Cambiar Estado Usuario"
+    usecase UC_AUDITORIA as "Auditar Operaciones"
+    usecase UC_LOGS as "Ver Logs del Sistema"
+    usecase UC_CONFIG as "Configurar Sistema"
+    usecase UC_BACKUP as "Realizar Backup"
+    usecase UC_DELETE as "Eliminar Información"
+  }
+}
+
+' =========================
+' RELACIONES
+' =========================
+Ciudadano --> UC_LOGIN
+Ciudadano --> UC_VER_RUTAS
+Ciudadano --> UC_VER_PARADAS
+Ciudadano --> UC_VER_ZONAS
+Ciudadano --> UC_MAPA
+Ciudadano --> UC_FILTRAR
+Ciudadano --> UC_DETALLE
+Ciudadano --> UC_LOGOUT
+
+Analista --> UC_LOGIN
+Analista --> UC_CRUD_RUTA
+Analista --> UC_PARADAS
+Analista --> UC_ZONAS
+Analista --> UC_ANALISIS
+Analista --> UC_SIMULACION
+Analista --> UC_METRICAS
+Analista --> UC_REPORTES
+Analista --> UC_EXPORTAR
+Analista --> UC_LOGOUT
+
+Administrador --> UC_LOGIN
+Administrador --> UC_USUARIOS
+Administrador --> UC_ROLES
+Administrador --> UC_ESTADO
+Administrador --> UC_AUDITORIA
+Administrador --> UC_LOGS
+Administrador --> UC_CONFIG
+Administrador --> UC_BACKUP
+Administrador --> UC_DELETE
+Administrador --> UC_LOGOUT
+
+' =========================
+' INCLUDE / EXTEND
+' =========================
+UC_FILTRAR ..> UC_VER_RUTAS : include
+UC_DETALLE ..> UC_VER_RUTAS : include
+UC_MAPA ..> UC_VER_RUTAS : include
+UC_MAPA ..> UC_VER_PARADAS : include
+UC_MAPA ..> UC_VER_ZONAS : include
+UC_EXPORTAR ..> UC_REPORTES : include
+UC_METRICAS ..> UC_ANALISIS : include
+UC_LOGS ..> UC_AUDITORIA : include
+
+' =========================
+' NOTAS DE ACTORES
+' =========================
+note right of Ciudadano
+  **Acceso: Solo Lectura**
+  - Visualiza rutas públicas
+  - Consulta paradas
+  - Ve zonas críticas
+  - Navega mapa interactivo
+  - Sin permisos de edición
+end note
+
+note right of Analista
+  **Acceso: Análisis y Gestión**
+  - Crea y edita rutas
+  - Maneja paradas
+  - Define zonas críticas
+  - Ejecuta simulaciones
+  - Analiza métricas
+end note
+
+note right of Administrador
+  **Acceso: Administración Sistema**
+  - Gestiona usuarios
+  - Asigna roles
+  - Elimina información
+  - Audita operaciones
+  - Mantiene seguridad
+end note
+
+@enduml

@@ -1,0 +1,50 @@
+### 🌍 HEALTH CHECK - Verificar conexión del servidor
+GET http://localhost:3000/api/health
+
+###
+### 🏠 ROOT - Página inicial y endpoints disponibles
+GET http://localhost:3000/
+
+###
+### ========== 🚌 RUTAS - ROUTES ==========
+
+### GET todas las rutas
+GET http://localhost:3000/api/routes
+
+###
+### GET una ruta específica por ID
+GET http://localhost:3000/api/routes/1
+
+###
+### POST crear nueva ruta
+POST http://localhost:3000/api/routes
+Content-Type: application/json
+
+{
+  "name": "Ruta 6",
+  "description": "Terminal - Aeropuerto",
+  "origin": "Terminal de Transporte",
+  "destination": "Aeropuerto Santagueda",
+  "distance_km": 18.5,
+  "estimated_time_minutes": 45
+}
+
+###
+### ========== 🚐 VEHÍCULOS - VEHICLES ==========
+
+### GET todos los vehículos
+GET http://localhost:3000/api/vehicles
+
+###
+### GET un vehículo específico por ID
+GET http://localhost:3000/api/vehicles/1
+
+###
+### ========== 🚏 PARADAS - STOPS ==========
+
+### GET todas las paradas
+GET http://localhost:3000/api/stops
+
+###
+### GET una parada específica por ID
+GET http://localhost:3000/api/stops/1

@@ -1,0 +1,35 @@
+{
+  "name": "proyecto-movesmart",
+  "version": "1.0.0",
+  "description": "our first project part of backend whit nodejs-express for analysis  of public transportation in the city of manizales.",
+  "homepage": "https://github.com/Shadow-inmutable/Proyecto-MoveSmart#readme",
+  "bugs": {
+    "url": "https://github.com/Shadow-inmutable/Proyecto-MoveSmart/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shadow-inmutable/Proyecto-MoveSmart.git"
+  },
+  "license": "ISC",
+  "author": "Brandon Berrio Agudelo And Angel Camilo Castaño",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.6.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

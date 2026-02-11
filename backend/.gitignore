@@ -1,0 +1,22 @@
+# Node modules
+node_modules/
+
+# Environment variables (NUNCA subas contraseñas)
+.env
+.env.local
+.env.*.local
+
+# Backups
+backend/backups/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

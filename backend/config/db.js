@@ -45,11 +45,18 @@ export const executeQuery = async (pool, sql, params = []) => {
 };
 
 
-// Inicializar la conexión
+/**
+ * Inicializar la conexión (Punto 6: Arquitectura)
+ */
 export const initDB = async () => {
-    db = await connectDB();
-    return db;
+    try {
+        const pool = await createMySQLConnection();
+        return pool;
+    } catch (error) {
+        console.error('❌ No se pudo conectar a la base de datos');
+        throw error;
+    }
 };
 
-export { db };
-export default db;
+
+export const db = null;

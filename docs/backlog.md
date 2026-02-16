@@ -9,7 +9,22 @@
 - Documentación final
 
 ## Historias de usuario 
-Como administradores, quieremos visualizar indicadores clave de ocupación para analizar el rendimiento de las rutas.
+## 📋 Historias de Usuario (User Stories)
+
+### HU01: Visualización de Rutas (Ciudadano)
+**Como** ciudadano de Manizales, 
+**quiero** acceder a un mapa interactivo con las rutas de transporte, 
+**para** conocer los recorridos disponibles sin necesidad de iniciar sesión.
+
+### HU02: Gestión de Movilidad (Gestor)
+**Como** gestor de movilidad, 
+**quiero** crear y editar rutas de transporte, 
+**para** proponer mejoras basadas en el flujo de pasajeros y zonas críticas.
+
+### HU03: Seguridad y Acceso (Sistema)
+**Como** administrador del sistema, 
+**quiero** proteger los endpoints de creación mediante tokens JWT, 
+**para** asegurar que solo los usuarios autorizados modifiquen la red vial.
 
 # Metodología SCRUM
 

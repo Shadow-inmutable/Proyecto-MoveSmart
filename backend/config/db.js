@@ -1,20 +1,20 @@
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
-
+// Cargar las variables del archivo .env
 dotenv.config();
 
 /**
- * Crea un pool de conexiones a MySQL
- * Es más eficiente que una conexión única
+ * Configuración y creación del Pool de conexiones.
+ * Un pool permite manejar múltiples peticiones simultáneas de forma eficiente.
  */
 export const createMySQLConnection = async () => {
     try {
-        const pool = await mysql.createPool({
-            host: process.env.DB_HOST || 'localhost',
-            user: process.env.DB_USER || 'root',
-            password: process.env.DB_PASSWORD || '',
-            database: process.env.DB_NAME || 'move_smart_db',
+        const pool = mysql.createPool({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
             port: process.env.DB_PORT || 3306,
             waitForConnections: true,
             connectionLimit: 10,
@@ -23,40 +23,21 @@ export const createMySQLConnection = async () => {
             keepAliveInitialDelayMs: 0,
         });
 
-        console.log('✅ Pool de MySQL creado exitosamente!');
+        // Verificamos la conexión con un ping inicial
+        await pool.query('SELECT 1');
+        
+        console.log(`✅ Conexión exitosa a MySQL: ${process.env.DB_NAME}`);
         return pool;
     } catch (error) {
-        console.error('❌ Error creando pool MySQL:', error.message);
+        console.error('❌ Error fatal al conectar con MySQL:', error.message);
+        // Es mejor lanzar el error para que el servidor no arranque si la DB no sirve
         throw error;
     }
 };
 
 /**
- * Ejecuta una consulta segura
- */
-export const executeQuery = async (pool, sql, params = []) => {
-    try {
-        const [rows] = await pool.execute(sql, params);
-        return rows;
-    } catch (error) {
-        console.error('❌ Error ejecutando query:', error);
-        throw error;
-    }
-};
-
-
-/**
- * Inicializar la conexión (Punto 6: Arquitectura)
+ * Inicializador de la base de datos para el index.js
  */
 export const initDB = async () => {
-    try {
-        const pool = await createMySQLConnection();
-        return pool;
-    } catch (error) {
-        console.error('❌ No se pudo conectar a la base de datos');
-        throw error;
-    }
+    return await createMySQLConnection();
 };
-
-
-export const db = null;

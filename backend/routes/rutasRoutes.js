@@ -5,7 +5,9 @@ import {
     updateRuta, 
     deleteRuta, 
     getZonas, 
-    createZona 
+    createZona,
+    putZona, 
+    deleteZona
 } from '../controllers/rutasController.js';
 
 import { verificarToken } from '../middlewares/authMiddleware.js'; 
@@ -19,5 +21,6 @@ router.delete('/:id', verificarToken, deleteRuta);
 
 router.get('/zonas', getZonas);
 router.post('/zonas', verificarToken, createZona);
-
+router.put('/zonas/:id', verificarToken, putZona);
+router.delete('/zonas/:id', verificarToken, deleteZona);
 export default router;

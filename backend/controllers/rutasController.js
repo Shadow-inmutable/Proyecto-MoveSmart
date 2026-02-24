@@ -46,7 +46,29 @@ export const createZona = async (req, res) => {
     const { nombre, nivel_congestion, latitud, longitud, descripcion_impacto} = req.body;
     try {
         await req.db.query('INSERT INTO zonas_criticas (nombre, nivel_congestion, latitud, longitud, descripcion_impacto) VALUES (?, ?, ?, ?, ?)', 
-            cd[nombre, nivel_congestion, latitud, longitud, descripcion_impacto]);
+            [nombre, nivel_congestion, latitud, longitud, descripcion_impacto]);
         res.json({ success: true, message: 'Zona crítica registrada' });
+    } catch (error) { res.status(500).json({ success: false, error: error.message }); }
+};
+
+export const putZona = async (req, res) => {
+    if (req.user.rol !== 'gestor') return res.status(403).json({ error: 'No autorizado' });
+    const { id } = req.params;
+    const { nombre, nivel_congestion, latitud, longitud, descripcion_impacto } = req.body;
+    try {
+        await req.db.query(
+            'UPDATE zonas_criticas SET nombre = ?, nivel_congestion = ?, latitud = ?, longitud = ?, descripcion_impacto = ? WHERE id = ?',
+            [nombre, nivel_congestion, latitud, longitud, descripcion_impacto, id]
+        );
+        res.json({ success: true, message: 'Zona crítica actualizada' });
+    } catch (error) { res.status(500).json({ success: false, error: error.message }); }
+};
+
+export const deleteZona = async (req, res) => {
+    if (req.user.rol !== 'gestor') return res.status(403).json({ error: 'No autorizado' });
+    const { id } = req.params;
+    try {
+        await req.db.query('DELETE FROM zonas_criticas WHERE id = ?', [id]);
+        res.json({ success: true, message: 'Zona crítica eliminada' });
     } catch (error) { res.status(500).json({ success: false, error: error.message }); }
 };

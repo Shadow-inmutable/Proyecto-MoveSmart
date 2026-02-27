@@ -1,8 +1,16 @@
 import axios from 'axios';
 
-// Creamos una instancia de axios para no repetir la URL en todo el proyecto
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api', // La URL de tu servidor Node.js
+  baseURL: 'http://localhost:3000/api',
+});
+
+// Este interceptor pega el token en cada llamada al backend
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export default api;

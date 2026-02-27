@@ -72,3 +72,71 @@ export const deleteZona = async (req, res) => {
         res.json({ success: true, message: 'Zona crítica eliminada' });
     } catch (error) { res.status(500).json({ success: false, error: error.message }); }
 };
+export const getParada = async (req, res) => {
+    try {
+        
+        const [rows] = await req.db.query('SELECT * FROM paradas ORDER BY ruta_id, orden ASC');
+        res.json({ 
+            success: true, 
+            data: rows 
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+export const createParada = async (req, res) => {
+    try {
+        const { ruta_id, nombre, latitud, longitud, orden } = req.body;
+
+        if (req.user.rol !== 'gestor') {
+            return res.status(403).json({ message: "No tienes permiso para modificar rutas" });
+        }
+
+        await req.db.query(
+            'INSERT INTO paradas (ruta_id, nombre, latitud, longitud, orden) VALUES (?, ?, ?, ?, ?)',
+            [ruta_id, nombre, latitud, longitud, orden]
+        );
+        res.status(201).json({ success: true, message: 'Parada de ruta añadida correctamente' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+export const updateParada = async (req, res) => {
+    try {
+        // 1. Verificación de Rol
+        if (req.user.rol !== 'gestor') {
+            return res.status(403).json({ success: false, error: 'No autorizado' });
+        }
+
+        const { id } = req.params;
+        const { nombre, latitud, longitud, orden } = req.body;
+
+        const [result] = await req.db.query(
+            'UPDATE paradas SET nombre = ?, latitud = ?, longitud = ?, orden = ? WHERE id = ?',
+            [nombre, latitud, longitud, orden, id]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, error: 'Parada no encontrada' });
+        }
+
+        res.json({ success: true, message: 'Parada actualizada correctamente' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+
+export const deleteParada = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (req.user.rol !== 'gestor') return res.status(403).json({ message: "No autorizado" });
+
+        await req.db.query('DELETE FROM paradas WHERE id = ?', [id]);
+        res.json({ success: true, message: 'Parada eliminada correctamente' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};

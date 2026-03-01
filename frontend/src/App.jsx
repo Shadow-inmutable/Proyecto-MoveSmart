@@ -1,15 +1,19 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar'; // Importamos el Navbar
+import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Mapa from './pages/Mapa';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
     <Router>
-      <Navbar /> {/* Se coloca aquí para que sea visible siempre */}
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/mapa" element={<Mapa />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );

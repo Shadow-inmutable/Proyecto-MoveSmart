@@ -27,6 +27,8 @@ El sistema utiliza una arquitectura monolítica modular basada en el patrón MVC
 │   │   │    ├── MapaLeaflet.jsx         # Mapa 
 │   │   │    ├── ZonaCriticaCard.jsx     # Tarjeta de zona crítica
 │   │   │    ├── GraficaComparacion.jsx  # Gráfica con Recharts
+│   │   │    ├── GraficaDistancia.jsx    # Gráfica con Recharts
+│   │   │    ├── GraficaEficiencia.jsx   # Gráfica con Recharts
 │   │   │    └──MapaLeaflet.jsx 
 │   │   ├── pages/                       # Login, Dashboard, Simulador, Reportes
 │   │   │    ├── Home.jsx                # Bienvenida ciudadano

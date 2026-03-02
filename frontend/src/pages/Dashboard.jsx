@@ -5,6 +5,7 @@ import MetricasOptimizacion from "../components/MetricasOptimizacion";
 import GraficaEficiencia from "../components/GraficaEficiencia";
 import GraficaDistancia from "../components/GraficaDistancia";
 import GraficaComparacion from "../components/GraficaComparacion";
+import ParadasGestor from "../components/ParadasGestor";
 import api from "../api/api";
 
 export default function Dashboard() {
@@ -60,7 +61,7 @@ export default function Dashboard() {
             <MapaLeaflet rutaSeleccionada={rutaSeleccionada} />
           </div>
 
-          {/* Bloque de Métricas (Lo que antes era tu panel derecho) */}
+          {/* Bloque de Métricas  panel derecho) */}
           <div style={{ flex: 3, background: "white", padding: "20px", borderRadius: "15px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", overflowY: "auto" }}>
             <MetricasOptimizacion rutaSeleccionada={rutaSeleccionada} />
             <div style={{ marginTop: "20px", padding: "15px", background: "#f8f9fa", borderRadius: "10px", textAlign: "center" }}>
@@ -70,6 +71,8 @@ export default function Dashboard() {
                 <h4 style={{ margin: 0, color: "#a3aed0" }}>🧪 Seleccione una ruta</h4>
               )}
             </div>
+            {/* 🔽 NUEVO BLOQUE DE PARADAS */}
+            <ParadasGestor />
           </div>
         </div>
 

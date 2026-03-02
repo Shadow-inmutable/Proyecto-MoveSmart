@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 
 export default function Sidebar({ onRutaSelect }) {
   const [rutas, setRutas] = useState([]);
   const [zonas, setZonas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSidebarData = async () => {
@@ -97,7 +99,7 @@ export default function Sidebar({ onRutaSelect }) {
     <div style={sidebarStyle}>
       {/* ================= RUTAS ACTIVAS ================= */}
       <div style={card}>
-        <h3>🛣 Rutas Activas</h3>
+        <h3> 🛣️ Rutas Activas</h3>
         <ul style={list}>
           {rutas.map((ruta) => (
             <li
@@ -110,12 +112,19 @@ export default function Sidebar({ onRutaSelect }) {
               <p>Tiempo estimado: {ruta.tiempo_estimado_min} min</p>
             </li>
           ))}
+          {/* BOTÓN PARA GESTIONAR RUTAS */}
+          <li
+            style={{ ...rutaItem, background: "#eef2ff", border: "1px solid #c7d2fe" }}
+            onClick={() => navigate("/rutas")}
+          >
+            🚍 Gestionar Rutas
+          </li>
         </ul>
       </div>
 
       {/* ================= ZONAS CRÍTICAS ================= */}
       <div style={card}>
-        <h3>⚠ Zonas Críticas</h3>
+        <h3> 🚨 Zonas Críticas⚠️</h3>
         <ul style={list}>
           {zonas.map((zona) => {
             const porcentaje = nivelToPorcentaje(zona.nivel_congestion);
@@ -156,6 +165,9 @@ export default function Sidebar({ onRutaSelect }) {
               </li>
             );
           })}
+          <li style={rutaItem} onClick={() => navigate("/zonas")}>
+            ⚠️🚨 Gestionar Zonas Críticas
+          </li>
         </ul>
       </div>
     </div>

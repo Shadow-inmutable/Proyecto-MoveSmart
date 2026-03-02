@@ -9,21 +9,18 @@ import {
   Legend,
 } from "recharts";
 
-export default function GraficaTiempo({ data }) {
+export default function GraficaDistancia({ data }) {
   return (
-    <div style={{ width: "100%", height: 220 }}>
-      <h4 style={{ marginBottom: "10px" }}>
-        ⏱ Ruta Actual vs Optimizada (min)
-      </h4>
-      <ResponsiveContainer>
+    <div style={{ width: "100%", height: 220, marginTop: "20px" }}>
+      <h4 style={{ marginBottom: "10px" }}>📏 Distancia por Ruta (km)</h4>
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="ruta" />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="tiempo_actual" fill="#ef4444" name="Actual" />
-          <Bar dataKey="tiempo_opt" fill="#22c55e" name="Optimizada" />
+          <Bar dataKey="distancia" fill="#3b82f6" name="Distancia (km)" />
         </BarChart>
       </ResponsiveContainer>
     </div>

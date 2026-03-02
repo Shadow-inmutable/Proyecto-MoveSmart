@@ -37,8 +37,11 @@ El sistema utiliza una arquitectura monolítica modular basada en el patrón MVC
 │   │   ├── pages/                       # Login, Dashboard, Simulador, Reportes
 │   │   │    ├── Home.jsx                # Bienvenida ciudadano
 │   │   │    ├── Login.jsx
-│   │   │    ├── Dashboard.jsx   # Panel gestor/admin      │
-│   │   │    └── Mapa.jsx      # Leaflet logic
+│   │   │    ├── Dashboard.jsx      # Panel gestor/admin      │
+│   │   │    ├── Mapa.jsx           # Leaflet logic
+│   │   │    ├── ParadasForms.jsx   # CRUD de paradas conectado a API
+│   │   │    ├── RutasForms.jsx     # CRUD Rutas conectado a API
+│   │   │    └── ZonasForms.jsx     # CRUD completo de zonas críticas conectado a la API 
 │   ├── /services    # Conexión con Backend (Fetch/Axios)
 │   ├── /hooks       # Lógica de estado compartida
 │   ├── App.js       # Componente raíz

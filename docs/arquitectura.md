@@ -11,9 +11,10 @@ El sistema utiliza una arquitectura monolítica modular basada en el patrón MVC
 │   ├── /controllers     # Lógica de negocio (Cálculos, controladores)
 │   ├── /Middlewares     # Consultas SQL
 │   ├── /routes          # Endpoints API
-│   ├── /utils           # Funciones de ayuda (Matemáticas)
+│   ├── /sql             # esquema base de datos
 │   ├── .env             # Datos sensibles (Ignorado por Git)
-│   └── server.js        # Inicio del servidor
+│   ├── index.js         # Inicio del servidor 
+│   └── /migrate-to-mysql.js # Conecta a MySQL y Migra datos de rutas, zonas y paradas
 │
 ├── /frontend
 │   ├── /public          # Imágenes y assets
@@ -31,7 +32,8 @@ El sistema utiliza una arquitectura monolítica modular basada en el patrón MVC
 │   │   │    ├── GraficaEficiencia.jsx   # Gráfica con Recharts
 │   │   │    ├── MetricasOptimizacion.jsx # Calculo para visualizar Metricas optimizacion + Filtro x ruta
 │   │   │    ├── ParadasGestor.jsx       # componente para visualizar paradas registradas desde la BD"
-│   │   │    └──MapaLeaflet.jsx 
+│   │   │    ├── ParadasPublicas.jsx     # información básica de paradas para usuarios ciudadanos
+│   │   │    └──MapaLeaflet.jsx          # mapa reutilzable para interfaz gestores/ciudadanos
 │   │   ├── pages/                       # Login, Dashboard, Simulador, Reportes
 │   │   │    ├── Home.jsx                # Bienvenida ciudadano
 │   │   │    ├── Login.jsx

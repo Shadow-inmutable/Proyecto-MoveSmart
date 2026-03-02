@@ -29,6 +29,8 @@ El sistema utiliza una arquitectura monolítica modular basada en el patrón MVC
 │   │   │    ├── GraficaComparacion.jsx  # Gráfica con Recharts
 │   │   │    ├── GraficaDistancia.jsx    # Gráfica con Recharts
 │   │   │    ├── GraficaEficiencia.jsx   # Gráfica con Recharts
+│   │   │    ├── MetricasOptimizacion.jsx # Calculo para visualizar Metricas optimizacion + Filtro x ruta
+│   │   │    ├── ParadasGestor.jsx       # componente para visualizar paradas registradas desde la BD"
 │   │   │    └──MapaLeaflet.jsx 
 │   │   ├── pages/                       # Login, Dashboard, Simulador, Reportes
 │   │   │    ├── Home.jsx                # Bienvenida ciudadano

@@ -20,12 +20,12 @@ El sistema MOVE SMART está diseñado para tres actores principales, cada uno co
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│         SISTEMA MOVE SMART DE MOVILIDAD                  │
+│         SISTEMA MOVE SMART DE MOVILIDAD                 │
 ├─────────────────────────────────────────────────────────┤
-│                                                          │
-│  👥 CIUDADANO        👤 ANALISTA        👑 ADMINISTRADOR │
-│  (Solo Lectura)      (CRUD + Análisis)   (Gestión TI)   │
-│                                                          │
+│                                                         │
+│  👥 CIUDADANO              👑 ADMINISTRADOR            │
+│  (Solo Lectura)        (CRUD + Análisis y Gestión TI)   │
+│                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 

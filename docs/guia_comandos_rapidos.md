@@ -265,7 +265,6 @@ curl http://localhost:3000/api/stops
 SELECT COUNT(*) as total FROM usuarios;
 SELECT COUNT(*) as total FROM rutas;
 SELECT COUNT(*) as total FROM paradas;
-SELECT COUNT(*) as total FROM vehiculos;
 ```
 
 ### Ver Estructura de Tabla

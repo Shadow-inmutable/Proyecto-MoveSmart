@@ -127,7 +127,6 @@ Debe devolver las 5 rutas de Manizales. ✅
 |----------|---------|-------|--------|
 | Rutas | 5 | 5 | ✅ |
 | Paradas | 10 | 40+ | ✅ |
-| Vehículos | 9 | 9 | ✅ |
 | Usuarios | 0 | 6 | ✅ (nuevos) |
 | Métricas | 0 | 5 | ✅ (nuevos) |
 
@@ -159,13 +158,11 @@ Luego: `npm run start`
 
 ```
 usuarios (6 actores)
-├── Analista (2)
 ├── Administrador (2)
 └── Ciudadano (2)
 
 rutas (5 de Manizales)
 ├── paradas (40+)
-├── vehiculos (9)
 └── metricas
 
 reportes

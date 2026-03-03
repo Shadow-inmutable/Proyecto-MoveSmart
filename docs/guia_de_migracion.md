@@ -148,7 +148,6 @@ Deberías ver en la lista izquierda:
 ✅ usuarios
 ✅ rutas
 ✅ paradas
-✅ vehiculos
 ✅ metricas
 ✅ reportes
 
@@ -323,7 +322,6 @@ Click en **"move_smart_db"** → Deberías ver:
 ✅ Tabla usuarios: 6 registros
 ✅ Tabla rutas: 5 registros
 ✅ Tabla paradas: 40+ registros
-✅ Tabla vehiculos: 9 registros
 ```
 
 ### 2️⃣ Reinicia el Backend

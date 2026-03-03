@@ -14,7 +14,7 @@
 
 La base de datos **Move Smart** está diseñada para:
 
-- **Gestionar usuarios** con 3 roles diferentes (Analista, Administrador, Ciudadano)
+- **Gestionar usuarios** con 3 roles diferentes ( Administrador, Ciudadano)
 - **Almacenar rutas** de transporte público con paradas y vehículos
 - **Calcular métricas** de eficiencia, ocupación y costos
 - **Generar reportes** y aprobar cambios propuestos
@@ -37,7 +37,7 @@ tabla: usuarios
 ├── nombre (VARCHAR 100)
 ├── email (VARCHAR 100, UNIQUE)
 ├── password (VARCHAR 255, hash SHA2)
-├── rol (ENUM: analista, administrador, ciudadano)
+├── rol (ENUM: administrador, ciudadano)
 ├── estado (ENUM: activo, inactivo)
 ├── created_at (TIMESTAMP)
 └── updated_at (TIMESTAMP)
@@ -47,8 +47,7 @@ Registros esperados: 2-10
 ```
 
 **Relaciones:**
-- Analista → ejecuta Simulaciones
-- Administrador → aprueba Aprobaciones, genera Reportes
+- Administrador → aprueba Aprobaciones, genera Reportes y ejecuta Simulaciones
 - Ciudadano → consulta Rutas
 
 **Datos de ejemplo:**
@@ -56,8 +55,8 @@ Registros esperados: 2-10
 {
   "id": 1,
   "nombre": "Carlos García",
-  "email": "carlos.analista@movesmart.local",
-  "rol": "analista",
+  "email": "carlos.administrador@movesmart.local",
+  "rol": "administrador",
   "estado": "activo"
 }
 ```
@@ -162,58 +161,9 @@ db.json.stops[].route_ids[0]       → paradas.ruta_id
 
 ---
 
-### 4. **VEHÍCULOS** (Buses asignados)
-
-```sql
-tabla: vehiculos
-├── id (INT, PRIMARY KEY)
-├── ruta_id (INT, FOREIGN KEY → rutas.id)
-├── placa (VARCHAR 20, UNIQUE) [Identificación del bus]
-├── modelo (VARCHAR 100) [Ej: "Mercedes-Benz OF-1419"]
-├── año (INT)
-├── capacidad (INT) [Asientos totales]
-├── pasajeros_actuales (INT) [En tiempo real]
-├── estado (ENUM: activo, mantenimiento, fuera_servicio)
-├── consumo_combustible_lpm (DECIMAL 5,2)
-├── fecha_mantenimiento (DATE)
-├── created_at (TIMESTAMP)
-└── updated_at (TIMESTAMP)
-
-Registros esperados: 10-50
-Índices: ruta_id, placa, estado
-```
-
-**Mapeo desde db.json:**
-```
-db.json.vehicles[].plate                    → vehiculos.placa
-db.json.vehicles[].route_id                 → vehiculos.ruta_id
-db.json.vehicles[].capacity                 → vehiculos.capacidad
-db.json.vehicles[].current_passengers       → vehiculos.pasajeros_actuales
-db.json.vehicles[].status                   → vehiculos.estado
-db.json.vehicles[].model                    → vehiculos.modelo
-db.json.vehicles[].year                     → vehiculos.año
-db.json.vehicles[].fuel_consumption_lpm     → vehiculos.consumo_combustible_lpm
-db.json.vehicles[].maintenance_date         → vehiculos.fecha_mantenimiento
-```
-
-**Datos de ejemplo:**
-```json
-{
-  "id": 1,
-  "ruta_id": 1,
-  "placa": "TSL-001",
-  "modelo": "Mercedes-Benz OF-1419",
-  "año": 2019,
-  "capacidad": 45,
-  "pasajeros_actuales": 32,
-  "estado": "activo",
-  "consumo_combustible_lpm": 0.28
-}
-```
-
 ---
 
-### 5. **MÉTRICAS** (Datos simulados)
+### 4. **MÉTRICAS** (Datos simulados)
 
 ```sql
 tabla: metricas
@@ -236,7 +186,7 @@ Registros: 1-5 por ruta
 - Calcula potenciales ahorros
 
 **Relaciones:**
-- 1 USUARIO (Analista) → * SIMULACIONES
+- 1 USUARIO (Administrador) → * SIMULACIONES
 - 1 RUTA → * SIMULACIONES
 
 
@@ -249,7 +199,6 @@ usuarios (1) ─→ (*) simulaciones
               ├→ (*) reportes
 
 rutas (1) ─→ (*) paradas
-          ├→ (*) vehiculos
 
 ```
 
@@ -260,7 +209,6 @@ rutas (1) ─→ (*) paradas
 | db.json | MySQL | Tipo | Notas |
 |---------|-------|------|-------|
 | routes | rutas | 1:1 | Datos directos |
-| vehicles | vehiculos | 1:1 | Incluye route_id |
 | stops | paradas | 1:1 | Incluye ruta_id desde route_ids[0] |
 | (users) | usuarios | 1:1| Nuevos registros |
 
@@ -279,11 +227,9 @@ SELECT
     r.destino,
     r.distancia_km,
     COUNT(DISTINCT p.id) as total_paradas,
-    COUNT(DISTINCT v.id) as total_vehiculos,
     r.calificacion_eficiencia
 FROM rutas r
 LEFT JOIN paradas p ON r.id = p.ruta_id
-LEFT JOIN vehiculos v ON r.id = v.ruta_id
 GROUP BY r.id;
 ```
 

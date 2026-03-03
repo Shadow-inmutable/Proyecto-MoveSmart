@@ -74,7 +74,7 @@ La comunicación se realiza mediante **API REST JSON**; el frontend consume ruta
 
 ### 4.1 Conceptual
 Las entidades principales son:
-- Usuarios (con roles: analista, administrador, ciudadano).
+- Usuarios (con roles: administrador, ciudadano).
 - Rutas de transporte público.
 - Paradas pertenecientes a rutas.
 - Zonas críticas (regiones geográficas concentradas en accidentes o demanda).
@@ -108,7 +108,7 @@ Move Smart es una plataforma **de simulación y gestión de rutas de transporte 
 2. **Gestionar paradas, rutas y zonas críticas** mediante formularios CRUD.
 3. **Simular optimizaciones** de rutas y calcular métricas de eficiencia/ocupación.
 4. **Administrar usuarios** y sus roles para restringir funcionalidades.
-5. **Generar reportes y aprobar cambios** (para analistas/administradores).
+5. **Generar reportes y aprobar cambios** (para administradores).
 
 Desde la perspectiva de un usuario:
 - **Ciudadano**: consulta rutas, paradas y mapas; no accede a ediciones.
@@ -145,7 +145,7 @@ Desde la perspectiva de un usuario:
    - Backend maneja `POST /api/rutas` que inserta en tabla `rutas`.
 
 4. **Simulación de optimización**
-   - El analista accede a la sección de métricas, selecciona una ruta y pulsa "Simular".
+   - El administrador accede a la sección de métricas, selecciona una ruta y pulsa "Simular".
    - Se calcula eficiencia y se almacena en la misma tabla (`rutas.calificacion_eficiencia`).
 
 5. **Consultar paradas desde la API**
@@ -202,7 +202,7 @@ Cada pantalla utiliza un diseño responsivo básico; los estilos son mínimos y 
 
 - **API REST propia**: prefijo `/api`. Rutas principales:
   - `/api/auth`: login y registro.
-  - `/api/usuarios`, `/api/rutas`, `/api/paradas`, `/api/zonas`, `/api/vehiculos`.
+  - `/api/usuarios`, `/api/rutas`, `/api/paradas`, `/api/zonas`.
 - **Base de datos MySQL**: servicio interno, accedido por `mysql2` o `sequelize`.
 
 No se consumen servicios externos adicionales en la versión actual.

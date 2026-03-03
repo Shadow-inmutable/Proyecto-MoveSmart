@@ -52,7 +52,6 @@ El archivo `backend/db.json` tiene un formato antiguo:
 ```json
 {
   "routes": [...],      ← Esperado: "rutas"
-  "vehicles": [...],    ← Esperado: "vehiculos"
   "stops": [...]        ← Esperado: "paradas"
 }
 ```
@@ -122,7 +121,6 @@ Verifica en phpMyAdmin:
 - usuarios ✓
 - rutas ✓
 - paradas ✓
-- vehiculos ✓
 - metricas ✓
 - reportes ✓
 

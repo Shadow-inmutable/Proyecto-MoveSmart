@@ -10,33 +10,60 @@ export const getRutas = async (req, res) => {
 
 export const createRuta = async (req, res) => {
     if (req.user.rol !== 'gestor') return res.status(403).json({ error: 'Acceso denegado' });
-    const { nombre, tipo, color_hex, distancia_km } = req.body;
+    const { nombre, tipo, color_hex, distancia_km, tiempo_estimado_min } = req.body;
+    
     if (!nombre || !distancia_km) return res.status(400).json({ error: 'Nombre y distancia son obligatorios' });
 
-    const tiempo_estimado = Math.round(distancia_km * 3.5); 
+    const tiempo = tiempo_estimado_min || Math.round(distancia_km * 3.5); 
     const eficiencia = Math.floor(Math.random() * (95 - 70 + 1)) + 70; 
+
     try {
         const [result] = await req.db.query(
             'INSERT INTO rutas (nombre, tipo, color_hex, distancia_km, tiempo_estimado_min, eficiencia_porcentaje) VALUES (?, ?, ?, ?, ?, ?)',
-            [nombre, tipo || 'actual', color_hex || '#3498db', distancia_km, tiempo_estimado, eficiencia]
+            [nombre, tipo || 'actual', color_hex || '#3498db', distancia_km, tiempo, eficiencia]
         );
-        res.status(201).json({ success: true, data: { id: result.insertId, tiempo_estimado, eficiencia } });
-    } catch (error) { res.status(500).json({ success: false, error: error.message }); }
+        res.status(201).json({ success: true, data: { id: result.insertId, tiempo_estimado: tiempo, eficiencia } });
+    } catch (error) { 
+        res.status(500).json({ success: false, error: error.message }); 
+    }
 };
 
 export const updateRuta = async (req, res) => {
     if (req.user.rol !== 'gestor') return res.status(403).json({ error: 'No autorizado' });
     const { id } = req.params;
-    const { nombre, tipo, color_hex, distancia_km } = req.body;
+    const { nombre, tipo, color_hex, distancia_km, tiempo_estimado_min } = req.body;
+
     try {
         const [actual] = await req.db.query('SELECT * FROM rutas WHERE id = ?', [id]);
         if (actual.length === 0) return res.status(404).json({ error: 'Ruta no encontrada' });
+
+
+        let nuevoTiempo = tiempo_estimado_min;
+        if (!nuevoTiempo && distancia_km) {
+            nuevoTiempo = Math.round(distancia_km * 3.5);
+        }
+
         await req.db.query(
-            'UPDATE rutas SET nombre = ?, tipo = ?, color_hex = ?, distancia_km = ? WHERE id = ?', 
-            [nombre || actual[0].nombre, tipo || actual[0].tipo, color_hex || actual[0].color_hex, distancia_km || actual[0].distancia_km, id]
+            `UPDATE rutas SET 
+                nombre = ?, 
+                tipo = ?, 
+                color_hex = ?, 
+                distancia_km = ?, 
+                tiempo_estimado_min = ? 
+            WHERE id = ?`, 
+            [
+                nombre || actual[0].nombre, 
+                tipo || actual[0].tipo, 
+                color_hex || actual[0].color_hex, 
+                distancia_km || actual[0].distancia_km, 
+                nuevoTiempo || actual[0].tiempo_estimado_min,
+                id
+            ]
         );
-        res.json({ success: true, message: 'Ruta actualizada' });
-    } catch (error) { res.status(500).json({ success: false, error: error.message }); }
+        res.json({ success: true, message: 'Ruta actualizada correctamente' });
+    } catch (error) { 
+        res.status(500).json({ success: false, error: error.message }); 
+    }
 };
 
 export const deleteRuta = async (req, res) => {

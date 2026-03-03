@@ -27,7 +27,7 @@ export default function ParadasGestor() {
 
   return (
     <div style={{ marginTop: "20px" }}>
-      <h4 style={{ color: "#2b3674", marginBottom: "10px" }}>
+      <h4 style={{ color: "#354dd6", marginBottom: "10px" }}>
         🚌 Paradas registradas
       </h4>
 
@@ -49,7 +49,7 @@ export default function ParadasGestor() {
 
       <div style={{ maxHeight: "220px", overflowY: "auto", border: "1px solid #e9ecef", borderRadius: "8px" }}>
         <table style={{ width: "100%", fontSize: "13px", borderCollapse: "collapse" }}>
-          <thead style={{ background: "#f1f3f5" }}>
+          <thead style={{ background: "#5880a9" }}>
             <tr>
               <th>ID</th>
               <th>Ruta ID</th>

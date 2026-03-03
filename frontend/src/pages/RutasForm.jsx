@@ -4,16 +4,18 @@ import api from "../api/api";
 export default function RutasForm() {
   const [rutas, setRutas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editandoId, setEditandoId] = useState(null);
 
-  const [form, setForm] = useState({
+  // 1. Estado inicial limpio
+  const estadoInicial = {
     nombre: "",
     tipo: "actual",
     color_hex: "#3498db",
     distancia_km: "",
     tiempo_estimado_min: ""
-  });
+  };
 
-  const [editandoId, setEditandoId] = useState(null);
+  const [form, setForm] = useState(estadoInicial);
 
   // 🔹 Cargar rutas
   const fetchRutas = async () => {
@@ -39,7 +41,6 @@ export default function RutasForm() {
   // 🔹 Crear o actualizar
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       if (editandoId) {
         await api.put(`/rutas/${editandoId}`, form);
@@ -47,37 +48,32 @@ export default function RutasForm() {
         await api.post("/rutas", form);
       }
 
-      setForm({
-        nombre: "",
-        tipo: "actual",
-        color_hex: "#3498db",
-        distancia_km: "",
-        tiempo_estimado_min: ""
-      });
-
+      setForm(estadoInicial);
       setEditandoId(null);
       fetchRutas();
     } catch (error) {
       console.error("Error guardando ruta:", error);
+      alert("Hubo un error al procesar la solicitud");
     }
   };
 
-  // 🔹 Editar
+  // 🔹 EDITAR (Corregido para asegurar que los datos se muestren)
   const handleEditar = (ruta) => {
+    setEditandoId(ruta.id);
     setForm({
-      nombre: ruta.nombre,
-      tipo: ruta.tipo,
-      color_hex: ruta.color_hex,
-      distancia_km: ruta.distancia_km,
+      nombre: ruta.nombre || "",
+      tipo: ruta.tipo || "actual",
+      color_hex: ruta.color_hex || "#3498db",
+      distancia_km: ruta.distancia_km || "",
       tiempo_estimado_min: ruta.tiempo_estimado_min || ""
     });
-    setEditandoId(ruta.id);
+    // Scroll suave hacia el formulario
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // 🔹 Eliminar
   const handleEliminar = async (id) => {
-    if (!window.confirm("¿Eliminar esta ruta?")) return;
-
+    if (!window.confirm("¿Estás seguro de eliminar esta ruta?")) return;
     try {
       await api.delete(`/rutas/${id}`);
       fetchRutas();
@@ -86,229 +82,248 @@ export default function RutasForm() {
     }
   };
 
-  if (loading) return <p>Cargando rutas...</p>;
+  if (loading) return <div style={{padding: "50px", textAlign: "center"}}>Cargando panel de gestión...</div>;
 
   return (
-    <div style={{ padding: "30px", maxWidth: "1100px", margin: "0 auto" }}>
-      <h2 style={{ color: "#2b3674", marginBottom: "20px" }}>
-        🚍 Gestión de Rutas
-      </h2>
+    <div style={{ padding: "40px", maxWidth: "1200px", margin: "0 auto", backgroundColor: "#F8FAFD", minHeight: "100vh" }}>
+      <header style={{ marginBottom: "30px" }}>
+        <h2 style={{ color: "#2b3674", fontSize: "28px", fontWeight: "700" }}>🚍 Gestión de Rutas</h2>
+        <p style={{ color: "#707EAE" }}>Administra y optimiza las trayectorias del transporte en Manizales</p>
+      </header>
 
-      {/* FORMULARIO */}
-      <form onSubmit={handleSubmit} style={formCard}>
-        <h4 style={{ marginBottom: "15px" }}>
-          {editandoId ? "Editar Ruta" : "Nueva Ruta"}
-        </h4>
-
-        <div style={grid}>
-          {/* Fila 1 */}
-          <input
-            type="text"
-            name="nombre"
-            placeholder="Nombre de la ruta"
-            value={form.nombre}
-            onChange={handleChange}
-            required
-            style={{ ...input, gridColumn: "span 2" }}
-          />
-
-          <select
-            name="tipo"
-            value={form.tipo}
-            onChange={handleChange}
-            style={input}
-          >
-            <option value="actual">Actual</option>
-            <option value="alternativa">Optimizada</option>
-          </select>
-
-          <input
-            type="color"
-            name="color_hex"
-            value={form.color_hex}
-            onChange={handleChange}
-            style={{
-              width: "60px",
-              height: "45px",
-              borderRadius: "10px",
-              border: "1px solid #000000",
-              cursor: "pointer",
-              justifySelf: "center"
-            }}
-          />
-
-          {/* Fila 2 centrada y compacta */}
-          <input
-            type="number"
-            name="distancia_km"
-            placeholder="Distancia (km)"
-            value={form.distancia_km}
-            onChange={handleChange}
-            required
-            style={{
-              ...input,
-              gridColumn: "2 / 3",
-              maxWidth: "160px",
-              justifySelf: "end"
-            }}
-          />
-
-          <input
-            type="number"
-            name="tiempo_estimado_min"
-            placeholder="Tiempo estimado (min)"
-            value={form.tiempo_estimado_min}
-            onChange={handleChange}
-            required
-            style={{
-              ...input,
-              gridColumn: "3 / 4",
-              width: "160px",
-              maxWidth: "160px",
-              justifySelf: "start"
-            }}
-          />
+      {/* FORMULARIO PROFESIONAL */}
+      <div style={formCard}>
+        <div style={{ borderBottom: "1px solid #F4F7FE", marginBottom: "20px", paddingBottom: "10px" }}>
+            <h4 style={{ color: "#2B3674", margin: 0 }}>
+                {editandoId ? "✏️ Editando Ruta" : "➕ Registrar Nueva Ruta"}
+            </h4>
         </div>
 
-        <div style={{ marginTop: "15px" }}>
-          <button type="submit" style={btnPrimary}>
-            {editandoId ? "Actualizar" : "Crear"} Ruta
-          </button>
+        <form onSubmit={handleSubmit}>
+          <div style={grid}>
+            <div style={{ gridColumn: "span 2" }}>
+              <label style={labelStyle}>Nombre de la Ruta</label>
+              <input
+                type="text"
+                name="nombre"
+                placeholder="Ej: Circular Av. Santander"
+                value={form.nombre}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+              />
+            </div>
 
-          {editandoId && (
-            <button
-              type="button"
-              onClick={() => {
-                setForm({
-                  nombre: "",
-                  tipo: "actual",
-                  color_hex: "#3498db",
-                  distancia_km: "",
-                  tiempo_estimado_min: ""
-                });
-                setEditandoId(null);
-              }}
-              style={btnSecondary}
-            >
-              Cancelar
+            <div>
+              <label style={labelStyle}>Tipo</label>
+              <select name="tipo" value={form.tipo} onChange={handleChange} style={inputStyle}>
+                <option value="actual">Ruta Actual</option>
+                <option value="alternativa">Ruta Optimizada</option>
+              </select>
+            </div>
+
+            <div style={{ textAlign: "center" }}>
+              <label style={labelStyle}>Color</label>
+              <input
+                type="color"
+                name="color_hex"
+                value={form.color_hex}
+                onChange={handleChange}
+                style={colorPicker}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle}>Distancia (km)</label>
+              <input
+                type="number"
+                step="0.1"
+                name="distancia_km"
+                value={form.distancia_km}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle}>Tiempo (min)</label>
+              <input
+                type="number"
+                name="tiempo_estimado_min"
+                value={form.tiempo_estimado_min}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+              />
+            </div>
+          </div>
+
+          <div style={{ marginTop: "25px", display: "flex", gap: "12px" }}>
+            <button type="submit" style={btnPrimary}>
+              {editandoId ? "Actualizar Cambios" : "Guardar Ruta"}
             </button>
-          )}
-        </div>
-      </form>
 
-      {/* TABLA */}
-      <div style={tableCard}>
+            {editandoId && (
+              <button
+                type="button"
+                onClick={() => { setForm(estadoInicial); setEditandoId(null); }}
+                style={btnSecondary}
+              >
+                Cancelar
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
+
+      {/* TABLA MODERNA */}
+      <div style={tableContainer}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead style={{ background: "#f1f3f5" }}>
-            <tr>
-              <th style={th}>ID</th>
-              <th style={th}>Nombre</th>
-              <th style={th}>Tipo</th>
-              <th style={th}>Distancia</th>
-              <th style={th}>Tiempo Est.</th>
-              <th style={th}>Eficiencia</th>
-              <th style={th}>Acciones</th>
+          <thead>
+            <tr style={{ backgroundColor: "#F4F7FE" }}>
+              <th style={thStyle}>ID</th>
+              <th style={thStyle}>Ruta</th>
+              <th style={thStyle}>Tipo</th>
+              <th style={thStyle}>Distancia</th>
+              <th style={thStyle}>Tiempo</th>
+              <th style={thStyle}>Eficiencia</th>
+              <th style={thStyle}>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {rutas.map((ruta) => (
-              <tr key={ruta.id} style={{ borderBottom: "1px solid #f1f3f5" }}>
-                <td style={td}>{ruta.id}</td>
-                <td style={td}>{ruta.nombre}</td>
-                <td style={td}>{ruta.tipo}</td>
-                <td style={td}>{ruta.distancia_km} km</td>
-                <td style={td}>{ruta.tiempo_estimado_min} min</td>
-                <td style={td}>{ruta.eficiencia_porcentaje}%</td>
-                <td style={td}>
-                  <button onClick={() => handleEditar(ruta)} style={btnEdit}>
-                    Editar
-                  </button>
-                  <button onClick={() => handleEliminar(ruta.id)} style={btnDelete}>
-                    Eliminar
-                  </button>
+              <tr key={ruta.id} style={trStyle}>
+                <td style={tdStyle}>#{ruta.id}</td>
+                <td style={tdStyle}>
+                    <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                        <div style={{width: "12px", height: "12px", borderRadius: "50%", backgroundColor: ruta.color_hex}}></div>
+                        <span style={{fontWeight: "600"}}>{ruta.nombre}</span>
+                    </div>
+                </td>
+                <td style={tdStyle}>
+                    <span style={{
+                        padding: "4px 10px", 
+                        borderRadius: "20px", 
+                        fontSize: "12px",
+                        backgroundColor: ruta.tipo === 'actual' ? '#E2E8F0' : '#E3F2FD',
+                        color: ruta.tipo === 'actual' ? '#4A5568' : '#1976D2'
+                    }}>
+                        {ruta.tipo}
+                    </span>
+                </td>
+                <td style={tdStyle}>{ruta.distancia_km} km</td>
+                <td style={tdStyle}>{ruta.tiempo_estimado_min} min</td>
+                <td style={{...tdStyle, color: "#05CD99", fontWeight: "bold"}}>{ruta.eficiencia_porcentaje}%</td>
+                <td style={tdStyle}>
+                  <button onClick={() => handleEditar(ruta)} style={btnIconEdit}>Editar</button>
+                  <button onClick={() => handleEliminar(ruta.id)} style={btnIconDelete}>Eliminar</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-
-        {rutas.length === 0 && (
-          <p style={{ padding: "15px", color: "#a3aed0" }}>
-            No hay rutas registradas
-          </p>
-        )}
       </div>
     </div>
   );
 }
 
-/* 🎨 ESTILOS MODERNOS */
+/* 🎨 SISTEMA DE DISEÑO (ESTILOS) */
 const formCard = {
   background: "#ffffff",
-  padding: "20px",
-  borderRadius: "16px",
-  border: "1px solid #eef2f7",
-  boxShadow: "0 10px 25px rgba(0,0,0,0.03)",
-  marginBottom: "25px"
+  padding: "30px",
+  borderRadius: "20px",
+  boxShadow: "0px 10px 30px rgba(112, 144, 176, 0.1)",
+  marginBottom: "35px",
+  border: "none"
 };
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "2fr 1fr 0.5fr 1fr",
+  gridTemplateColumns: "repeat(4, 1fr)",
   gap: "20px",
-  alignItems: "center"
+  alignItems: "end"
 };
 
-const input = {
-  padding: "10px",
-  borderRadius: "8px",
-  border: "1px solid #e9ecef",
-  width: "100%"
+const labelStyle = {
+  display: "block",
+  marginBottom: "8px",
+  color: "#2B3674",
+  fontSize: "14px",
+  fontWeight: "600"
 };
 
-const tableCard = {
-  borderRadius: "16px",
-  border: "1px solid #eef2f7",
+const inputStyle = {
+  padding: "12px 16px",
+  borderRadius: "14px",
+  border: "1px solid #E0E5F2",
+  width: "100%",
+  boxSizing: "border-box",
+  fontSize: "14px",
+  outline: "none",
+  backgroundColor: "#F4F7FE"
+};
+
+const colorPicker = {
+  width: "100%",
+  height: "45px",
+  borderRadius: "14px",
+  border: "1px solid #E0E5F2",
+  cursor: "pointer",
+  backgroundColor: "#F4F7FE",
+  padding: "5px"
+};
+
+const tableContainer = {
+  borderRadius: "20px",
   overflow: "hidden",
   background: "#ffffff",
-  boxShadow: "0 10px 25px rgba(0,0,0,0.03)"
+  boxShadow: "0px 10px 30px rgba(112, 144, 176, 0.08)"
 };
 
-const th = { padding: "12px", textAlign: "left", fontWeight: "600" };
-const td = { padding: "10px" };
+const thStyle = { padding: "16px", textAlign: "left", color: "#A3AED0", fontSize: "13px", fontWeight: "600", textTransform: "uppercase" };
+const tdStyle = { padding: "16px", color: "#2B3674", fontSize: "14px" };
+const trStyle = { borderBottom: "1px solid #F4F7FE", transition: "0.2s" };
 
 const btnPrimary = {
-  padding: "10px 18px",
-  background: "#2b3674",
+  padding: "12px 24px",
+  background: "#4318FF",
   color: "white",
   border: "none",
-  borderRadius: "8px",
+  borderRadius: "14px",
+  fontWeight: "700",
   cursor: "pointer",
-  marginRight: "10px"
+  boxShadow: "0px 10px 20px rgba(67, 24, 255, 0.2)"
 };
 
 const btnSecondary = {
-  padding: "10px 18px",
-  background: "#e9ecef",
+  padding: "12px 24px",
+  background: "#E2E8F0",
+  color: "#2B3674",
   border: "none",
+  borderRadius: "14px",
+  fontWeight: "700",
+  cursor: "pointer"
+};
+
+const btnIconEdit = {
+  marginRight: "10px",
+  background: "#FFEB3B",
+  border: "none",
+  padding: "6px 12px",
   borderRadius: "8px",
-  cursor: "pointer"
+  cursor: "pointer",
+  fontSize: "12px",
+  fontWeight: "600"
 };
 
-const btnEdit = {
-  marginRight: "8px",
-  padding: "6px 12px",
-  background: "#ffc107",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer"
-};
-
-const btnDelete = {
-  padding: "6px 12px",
-  background: "#dc3545",
+const btnIconDelete = {
+  background: "#FF5252",
   color: "white",
   border: "none",
-  borderRadius: "6px",
-  cursor: "pointer"
+  padding: "6px 12px",
+  borderRadius: "8px",
+  cursor: "pointer",
+  fontSize: "12px",
+  fontWeight: "600"
 };

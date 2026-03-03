@@ -4,18 +4,18 @@ import api from "../api/api";
 export default function ZonasForm() {
   const [zonas, setZonas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editandoId, setEditandoId] = useState(null);
 
-  const [form, setForm] = useState({
+  const estadoInicial = {
     nombre: "",
-    nivel_congestion: "media",
+    nivel_congestion: "medio", // Cambiado a 'medio' para coincidir con SQL
     latitud: "",
     longitud: "",
     descripcion_impacto: ""
-  });
+  };
 
-  const [editandoId, setEditandoId] = useState(null);
+  const [form, setForm] = useState(estadoInicial);
 
-  // 🔹 Cargar zonas
   const fetchZonas = async () => {
     try {
       const res = await api.get("/rutas/zonas");
@@ -31,53 +31,49 @@ export default function ZonasForm() {
     fetchZonas();
   }, []);
 
-  // 🔹 Manejo de inputs
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // 🔹 Crear o actualizar
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
+      const datosEnvio = {
+        ...form,
+        latitud: parseFloat(form.latitud),
+        longitud: parseFloat(form.longitud)
+      };
+
       if (editandoId) {
-        await api.put(`/rutas/zonas/${editandoId}`, form);
+        await api.put(`/rutas/zonas/${editandoId}`, datosEnvio);
       } else {
-        await api.post("/rutas/zonas", form);
+        await api.post("/rutas/zonas", datosEnvio);
       }
 
-      setForm({
-        nombre: "",
-        nivel_congestion: "media",
-        latitud: "",
-        longitud: "",
-        descripcion_impacto: ""
-      });
-
+      setForm(estadoInicial);
       setEditandoId(null);
       fetchZonas();
     } catch (error) {
       console.error("Error guardando zona:", error);
+      alert("Error al procesar la zona crítica");
     }
   };
 
-  // 🔹 Editar
   const handleEditar = (zona) => {
-    setForm({
-      nombre: zona.nombre,
-      nivel_congestion: zona.nivel_congestion,
-      latitud: zona.latitud,
-      longitud: zona.longitud,
-      descripcion_impacto: zona.descripcion_impacto
-    });
     setEditandoId(zona.id);
+    setForm({
+      nombre: zona.nombre || "",
+      // Normalizamos el valor que viene de la DB para el select
+      nivel_congestion: zona.nivel_congestion || "medio",
+      latitud: zona.latitud || "",
+      longitud: zona.longitud || "",
+      descripcion_impacto: zona.descripcion_impacto || ""
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 🔹 Eliminar
   const handleEliminar = async (id) => {
     if (!window.confirm("¿Eliminar esta zona crítica?")) return;
-
     try {
       await api.delete(`/rutas/zonas/${id}`);
       fetchZonas();
@@ -86,277 +82,175 @@ export default function ZonasForm() {
     }
   };
 
-  if (loading) return <p>Cargando zonas críticas...</p>;
+  if (loading) return <div style={{padding: "40px", textAlign: "center", color: "#2b3674"}}>Cargando inteligencia vial...</div>;
 
   return (
-    <div style={{ padding: "30px", maxWidth: "1100px", margin: "0 auto" }}>
-      <h2 style={{ color: "#2b3674", marginBottom: "20px" }}>
-        🚨 Gestión de Zonas Críticas ⚠️
-      </h2>
+    <div style={{ padding: "40px", maxWidth: "1200px", margin: "0 auto", backgroundColor: "#F8FAFD", minHeight: "100vh" }}>
+      <header style={{ marginBottom: "30px" }}>
+        <h2 style={{ color: "#2b3674", fontSize: "28px", fontWeight: "700" }}>🚨 Gestión de Zonas Críticas ⚠️</h2>
+        <p style={{ color: "#707EAE" }}>Monitorea y define puntos de alta congestión en la red de transporte</p>
+      </header>
 
-      {/* ================= FORMULARIO OPTIMIZADO ================= */}
-      <form onSubmit={handleSubmit} style={formCard}>
+      <div style={formCard}>
         <h4 style={formTitle}>
-          {editandoId ? "✏️ Editar Zona Crítica" : "➕ Nueva Zona Crítica"}
+          {editandoId ? "✏️ Editar Punto de Congestión" : "➕ Registrar Nueva Alerta Vial"}
         </h4>
 
-        <div style={formGrid}>
-          {/* Nombre */}
-          <div style={fieldGroup}>
-            <label style={label}>Nombre de la zona</label>
-            <input
-              type="text"
-              name="nombre"
-              placeholder="Ej: Glorieta de la Autónoma"
-              value={form.nombre}
-              onChange={handleChange}
-              required
-              style={input}
-            />
+        <form onSubmit={handleSubmit}>
+          <div style={formGrid}>
+            <div style={fieldGroup}>
+              <label style={labelStyle}>Nombre de la zona</label>
+              <input
+                type="text"
+                name="nombre"
+                placeholder="Ej: Sector El Cable"
+                value={form.nombre}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+              />
+            </div>
+
+            <div style={fieldGroup}>
+              <label style={labelStyle}>Nivel de congestión</label>
+              <select
+                name="nivel_congestion"
+                value={form.nivel_congestion}
+                onChange={handleChange}
+                style={inputStyle}
+              >
+                {/* Valores corregidos para coincidir con el ENUM de la BD */}
+                <option value="bajo">🟢 Bajo</option>
+                <option value="medio">🟡 Medio</option>
+                <option value="alto">🔴 Alto</option>
+              </select>
+            </div>
+
+            <div style={fieldGroup}>
+              <label style={labelStyle}>Latitud</label>
+              <input
+                type="number"
+                step="any"
+                name="latitud"
+                placeholder="5.0689"
+                value={form.latitud}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+              />
+            </div>
+
+            <div style={fieldGroup}>
+              <label style={labelStyle}>Longitud</label>
+              <input
+                type="number"
+                step="any"
+                name="longitud"
+                placeholder="-75.5039"
+                value={form.longitud}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+              />
+            </div>
+
+            <div style={{ ...fieldGroup, gridColumn: "1 / -1" }}>
+              <label style={labelStyle}>Análisis del impacto</label>
+              <textarea
+                name="descripcion_impacto"
+                placeholder="Detalla cómo esta zona afecta la fluidez de las rutas..."
+                value={form.descripcion_impacto}
+                onChange={handleChange}
+                rows={3}
+                style={textareaStyle}
+              />
+            </div>
           </div>
 
-          {/* Nivel */}
-          <div style={fieldGroup}>
-            <label style={label}>Nivel de congestión</label>
-            <select
-              name="nivel_congestion"
-              value={form.nivel_congestion}
-              onChange={handleChange}
-              style={input}
-            >
-              <option value="baja">Baja</option>
-              <option value="media">Media</option>
-              <option value="alta">Alta</option>
-            </select>
-          </div>
-
-          {/* Latitud */}
-          <div style={fieldGroup}>
-            <label style={label}>Latitud</label>
-            <input
-              type="number"
-              step="any"
-              name="latitud"
-              placeholder="5.0689"
-              value={form.latitud}
-              onChange={handleChange}
-              required
-              style={inputSmall}
-            />
-          </div>
-
-          {/* Longitud */}
-          <div style={fieldGroup}>
-            <label style={label}>Longitud</label>
-            <input
-              type="number"
-              step="any"
-              name="longitud"
-              placeholder="-75.5039"
-              value={form.longitud}
-              onChange={handleChange}
-              required
-              style={inputSmall}
-            />
-          </div>
-
-          {/* Descripción */}
-          <div style={{ ...fieldGroup, gridColumn: "1 / -1" }}>
-            <label style={label}>Descripción del impacto</label>
-            <textarea
-              name="descripcion_impacto"
-              placeholder="Describe cómo afecta esta zona al tráfico..."
-              value={form.descripcion_impacto}
-              onChange={handleChange}
-              rows={3}
-              style={textarea}
-            />
-          </div>
-        </div>
-
-        {/* BOTONES */}
-        <div style={actions}>
-          <button type="submit" style={btnPrimary}>
-            {editandoId ? "Actualizar Zona" : "Registrar Zona"}
-          </button>
-
-          {editandoId && (
-            <button
-              type="button"
-              onClick={() => {
-                setForm({
-                  nombre: "",
-                  nivel_congestion: "media",
-                  latitud: "",
-                  longitud: "",
-                  descripcion_impacto: ""
-                });
-                setEditandoId(null);
-              }}
-              style={btnSecondary}
-            >
-              Cancelar
+          <div style={actions}>
+            <button type="submit" style={btnPrimary}>
+              {editandoId ? "Actualizar Alerta" : "Registrar Punto Crítico"}
             </button>
-          )}
-        </div>
-      </form>
+            {editandoId && (
+              <button
+                type="button"
+                onClick={() => { setForm(estadoInicial); setEditandoId(null); }}
+                style={btnSecondary}
+              >
+                Cancelar
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
 
-      {/* ================= TABLA ================= */}
-      <div style={tableCard}>
+      <div style={tableContainer}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead style={{ background: "#f1f3f5" }}>
-            <tr>
-              <th style={th}>ID</th>
-              <th style={th}>Nombre</th>
-              <th style={th}>Congestión</th>
-              <th style={th}>Latitud</th>
-              <th style={th}>Longitud</th>
-              <th style={th}>Descripción</th>
-              <th style={th}>Acciones</th>
+          <thead>
+            <tr style={{ backgroundColor: "#F4F7FE" }}>
+              <th style={thStyle}>ID</th>
+              <th style={thStyle}>Zona</th>
+              <th style={thStyle}>Nivel</th>
+              <th style={thStyle}>Coordenadas</th>
+              <th style={thStyle}>Impacto</th>
+              <th style={thStyle}>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {zonas.map((zona) => (
-              <tr key={zona.id} style={{ borderBottom: "1px solid #f1f3f5" }}>
-                <td style={td}>{zona.id}</td>
-                <td style={td}>{zona.nombre}</td>
-                <td style={td}>{zona.nivel_congestion}</td>
-                <td style={td}>{zona.latitud}</td>
-                <td style={td}>{zona.longitud}</td>
-                <td style={td}>{zona.descripcion_impacto}</td>
-                <td style={td}>
-                  <button onClick={() => handleEditar(zona)} style={btnEdit}>
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleEliminar(zona.id)}
-                    style={btnDelete}
-                  >
-                    Eliminar
-                  </button>
+              <tr key={zona.id} style={trStyle}>
+                <td style={tdStyle}>#{zona.id}</td>
+                <td style={{...tdStyle, fontWeight: "600"}}>{zona.nombre}</td>
+                <td style={tdStyle}>
+                  {/* Lógica de colores corregida para leer 'alto', 'medio', 'bajo' */}
+                  <span style={{
+                    padding: "4px 10px",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    backgroundColor: 
+                      zona.nivel_congestion === 'alto' ? '#FFEDED' : 
+                      zona.nivel_congestion === 'medio' ? '#FFF9E6' : '#E6FFFA',
+                    color: 
+                      zona.nivel_congestion === 'alto' ? '#FF5252' : 
+                      zona.nivel_congestion === 'medio' ? '#FFB300' : '#00BFA5'
+                  }}>
+                    {zona.nivel_congestion?.toUpperCase()}
+                  </span>
+                </td>
+                <td style={{...tdStyle, fontSize: "12px", color: "#707EAE"}}>
+                  {zona.latitud}, {zona.longitud}
+                </td>
+                <td style={{...tdStyle, fontSize: "13px", maxWidth: "250px"}}>{zona.descripcion_impacto}</td>
+                <td style={tdStyle}>
+                  <button onClick={() => handleEditar(zona)} style={btnIconEdit}>Editar</button>
+                  <button onClick={() => handleEliminar(zona.id)} style={btnIconDelete}>Borrar</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-
-        {zonas.length === 0 && (
-          <p style={{ padding: "15px", color: "#a3aed0" }}>
-            No hay zonas críticas registradas
-          </p>
-        )}
+        {zonas.length === 0 && <p style={emptyText}>No hay alertas registradas en el sistema.</p>}
       </div>
     </div>
   );
 }
 
-/* ================= ESTILOS ================= */
-
-const formCard = {
-  background: "#ffffff",
-  padding: "25px",
-  borderRadius: "16px",
-  border: "1px solid #eef2f7",
-  boxShadow: "0 10px 25px rgba(0,0,0,0.03)",
-  marginBottom: "30px"
-};
-
-const formTitle = {
-  marginBottom: "20px",
-  color: "#2b3674",
-  fontWeight: "600"
-};
-
-const formGrid = {
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr",
-  gap: "20px"
-};
-
-const fieldGroup = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "6px"
-};
-
-const label = {
-  fontSize: "13px",
-  fontWeight: "600",
-  color: "#2b3674"
-};
-
-const input = {
-  padding: "10px",
-  borderRadius: "8px",
-  border: "1px solid #e9ecef",
-  width: "100%"
-};
-
-const inputSmall = {
-  padding: "10px",
-  borderRadius: "8px",
-  border: "1px solid #e9ecef",
-  width: "100%",
-  maxWidth: "220px"
-};
-
-const textarea = {
-  padding: "12px",
-  borderRadius: "8px",
-  border: "1px solid #e9ecef",
-  resize: "none",
-  width: "100%"
-};
-
-const actions = {
-  marginTop: "25px",
-  display: "flex",
-  justifyContent: "flex-end",
-  gap: "10px"
-};
-
-const tableCard = {
-  borderRadius: "16px",
-  border: "1px solid #eef2f7",
-  overflow: "hidden",
-  background: "#ffffff",
-  boxShadow: "0 10px 25px rgba(0,0,0,0.03)"
-};
-
-const th = { padding: "12px", textAlign: "left", fontWeight: "600" };
-const td = { padding: "10px" };
-
-const btnPrimary = {
-  padding: "10px 18px",
-  background: "#2b3674",
-  color: "white",
-  border: "none",
-  borderRadius: "8px",
-  cursor: "pointer"
-};
-
-const btnSecondary = {
-  padding: "10px 18px",
-  background: "#e9ecef",
-  border: "none",
-  borderRadius: "8px",
-  cursor: "pointer"
-};
-
-const btnEdit = {
-  marginRight: "8px",
-  padding: "6px 12px",
-  background: "#ffc107",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer"
-};
-
-const btnDelete = {
-  padding: "6px 12px",
-  background: "#dc3545",
-  color: "white",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer"
-};
+// ... (estilos se mantienen igual)
+const formCard = { background: "#ffffff", padding: "30px", borderRadius: "20px", boxShadow: "0px 10px 30px rgba(112, 144, 176, 0.1)", marginBottom: "35px", border: "none" };
+const formTitle = { marginBottom: "20px", color: "#2B3674", fontWeight: "700" };
+const formGrid = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" };
+const fieldGroup = { display: "flex", flexDirection: "column", gap: "8px" };
+const labelStyle = { color: "#2B3674", fontSize: "14px", fontWeight: "600" };
+const inputStyle = { padding: "12px 16px", borderRadius: "14px", border: "1px solid #E0E5F2", width: "100%", boxSizing: "border-box", backgroundColor: "#F4F7FE", outline: "none" };
+const textareaStyle = { ...inputStyle, resize: "none", fontFamily: "inherit" };
+const actions = { marginTop: "25px", display: "flex", justifyContent: "flex-end", gap: "12px" };
+const tableContainer = { borderRadius: "20px", overflow: "hidden", background: "#ffffff", boxShadow: "0px 10px 30px rgba(112, 144, 176, 0.08)" };
+const thStyle = { padding: "16px", textAlign: "left", color: "#A3AED0", fontSize: "13px", fontWeight: "600", textTransform: "uppercase" };
+const tdStyle = { padding: "16px", color: "#2B3674", fontSize: "14px" };
+const trStyle = { borderBottom: "1px solid #F4F7FE" };
+const btnPrimary = { padding: "12px 24px", background: "#2B3674", color: "white", border: "none", borderRadius: "14px", fontWeight: "700", cursor: "pointer", boxShadow: "0px 10px 20px rgba(43, 54, 116, 0.2)" };
+const btnSecondary = { padding: "12px 24px", background: "#E2E8F0", color: "#2B3674", border: "none", borderRadius: "14px", fontWeight: "700", cursor: "pointer" };
+const btnIconEdit = { marginRight: "10px", background: "#FFEB3B", border: "none", padding: "6px 12px", borderRadius: "8px", cursor: "pointer", fontSize: "12px", fontWeight: "600" };
+const btnIconDelete = { background: "#FF5252", color: "white", border: "none", padding: "6px 12px", borderRadius: "8px", cursor: "pointer", fontSize: "12px", fontWeight: "600" };
+const emptyText = { padding: "30px", textAlign: "center", color: "#A3AED0" };

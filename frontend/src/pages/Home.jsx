@@ -101,7 +101,7 @@ export default function Home() {
     <div style={container}>
       {/* HERO PRINCIPAL */}
       <div style={hero}>
-        <h1 style={title}>🚍 MoveSmart Manizales</h1>
+        <h1 style={title}> MoveSmart Manizales</h1>
         <p style={subtitle}>
           Sistema inteligente para el análisis y optimización de rutas de transporte público
         </p>

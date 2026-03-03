@@ -11,94 +11,112 @@ export default function Login() {
     e.preventDefault();
     try {
       const { data } = await api.post('/usuarios/login', { email, password });
+      
+      // Guardamos la sesión
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      alert('¡Bienvenido, Gestor!');
-      navigate('/');
+
+      // 🔀 REDIRECCIÓN POR ROL
+      if (data.user.rol === 'gestor') {
+        navigate('/dashboard'); // Si es gestor, va al panel de analítica
+      } else {
+        navigate('/'); // Si es ciudadano, va al mapa normal
+      }
+
     } catch (err) {
       alert('Error en el acceso: ' + (err.response?.data?.error || 'Credenciales inválidas'));
     }
   };
 
+  // --- NUEVOS ESTILOS MODERNOS ---
   const containerStyle = {
     minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     padding: '20px',
-    backgroundImage:
-      "url('https://i.pinimg.com/736x/33/2d/e4/332de40e17a6e78476f96226073c0adf.jpg')",
+    backgroundImage: "url('https://i.pinimg.com/736x/33/2d/e4/332de40e17a6e78476f96226073c0adf.jpg')",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    backgroundAttachment: 'fixed',
-    position: 'relative',
+    fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif",
   };
 
   const overlayStyle = {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    background: 'rgba(0, 0, 0, 0.45)',
-    backdropFilter: 'blur(2px)',
+    top: 0, left: 0, width: '100%', height: '100%',
+    background: 'linear-gradient(135deg, rgba(30, 60, 114, 0.4), rgba(0, 0, 0, 0.7))',
+    zIndex: 1,
   };
 
   const cardStyle = {
     position: 'relative',
-    background: 'rgba(255, 255, 255, 0.95)',
-    padding: '2.5rem',
-    borderRadius: '18px',
-    boxShadow: '0 15px 40px rgba(0,0,0,0.35)',
+    zIndex: 2,
+    background: 'rgba(255, 255, 255, 0.92)', // Un blanco casi puro pero con leve transparencia
+    backdropFilter: 'blur(10px)',
+    padding: '3rem 2.5rem',
+    borderRadius: '24px',
+    boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
     width: '100%',
-    maxWidth: '420px',
+    maxWidth: '400px',
     textAlign: 'center',
+    border: '1px solid rgba(255, 255, 255, 0.3)',
   };
 
   const titleStyle = {
-    marginBottom: '1.5rem',
-    color: '#1e3c72',
-    fontSize: '1.8rem',
+    marginBottom: '0.5rem',
+    color: '#2B3674', // Azul profundo moderno
+    fontSize: '2rem',
+    fontWeight: '800',
+    letterSpacing: '-1px',
   };
 
   const subtitleStyle = {
-    marginBottom: '1.5rem',
-    color: '#555',
-    fontSize: '0.95rem',
+    marginBottom: '2rem',
+    color: '#707EAE', // Gris azulado moderno
+    fontSize: '0.9rem',
+    fontWeight: '500',
+  };
+
+  const inputGroupStyle = {
+    marginBottom: '20px',
+    textAlign: 'left',
+  };
+
+  const labelStyle = {
+    display: 'block',
+    marginBottom: '8px',
+    color: '#2B3674',
+    fontSize: '0.85rem',
+    fontWeight: '600',
+    paddingLeft: '5px',
   };
 
   const inputStyle = {
     width: '100%',
-    padding: '12px',
-    marginBottom: '15px',
-    borderRadius: '10px',
-    border: '1px solid #ccc',
-    fontSize: '1rem',
+    padding: '14px 16px',
+    borderRadius: '14px',
+    border: '1px solid #E0E5F2',
+    fontSize: '0.95rem',
     outline: 'none',
-    transition: 'all 0.3s ease',
+    backgroundColor: '#F4F7FE',
+    color: '#2B3674',
+    boxSizing: 'border-box',
+    transition: 'all 0.2s ease',
   };
 
   const buttonStyle = {
     width: '100%',
-    padding: '12px',
-    background: 'linear-gradient(135deg, #1e3c72, #2a5298)',
+    padding: '15px',
+    background: '#4318FF', // Azul vibrante estilo Dashboard Moderno
     color: 'white',
     border: 'none',
-    borderRadius: '10px',
+    borderRadius: '16px',
     fontSize: '1rem',
-    fontWeight: 'bold',
+    fontWeight: '700',
     cursor: 'pointer',
+    marginTop: '10px',
+    boxShadow: '0px 10px 20px rgba(67, 24, 255, 0.23)',
     transition: 'all 0.3s ease',
-  };
-
-  const handleMouseEnter = (e) => {
-    e.target.style.transform = 'translateY(-2px)';
-    e.target.style.boxShadow = '0 8px 18px rgba(0,0,0,0.25)';
-  };
-
-  const handleMouseLeave = (e) => {
-    e.target.style.transform = 'translateY(0)';
-    e.target.style.boxShadow = 'none';
   };
 
   return (
@@ -106,35 +124,52 @@ export default function Login() {
       <div style={overlayStyle}></div>
 
       <div style={cardStyle}>
-        <h1 style={titleStyle}>🚌 Move Smart Manizales</h1>
-        <p style={subtitleStyle}>Acceso para Gestores del Sistema de Transporte</p>
+        <div style={{fontSize: '40px', marginBottom: '10px'}}>🚌</div>
+        <h1 style={titleStyle}>Move Smart</h1>
+        <p style={subtitleStyle}>Ingresa tus credenciales para gestionar la ciudad</p>
 
         <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            placeholder="Email"
-            onChange={e => setEmail(e.target.value)}
-            required
-            style={inputStyle}
-          />
+          <div style={inputGroupStyle}>
+            <label style={labelStyle}>Correo Electrónico</label>
+            <input
+              type="email"
+              placeholder="ejemplo@correo.com"
+              onChange={e => setEmail(e.target.value)}
+              required
+              style={inputStyle}
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Contraseña"
-            onChange={e => setPassword(e.target.value)}
-            required
-            style={inputStyle}
-          />
+          <div style={inputGroupStyle}>
+            <label style={labelStyle}>Contraseña</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              onChange={e => setPassword(e.target.value)}
+              required
+              style={inputStyle}
+            />
+          </div>
 
           <button
             type="submit"
             style={buttonStyle}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={(e) => {
+              e.target.style.background = '#3311DB';
+              e.target.style.transform = 'scale(1.02)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = '#4318FF';
+              e.target.style.transform = 'scale(1)';
+            }}
           >
-            Entrar al Panel
+            Iniciar Sesión
           </button>
         </form>
+        
+        <p style={{marginTop: '25px', fontSize: '0.8rem', color: '#707EAE'}}>
+          Manizales • Sistema de Gestión de Movilidad
+        </p>
       </div>
     </div>
   );

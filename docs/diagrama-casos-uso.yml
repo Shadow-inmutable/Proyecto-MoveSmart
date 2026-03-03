@@ -12,7 +12,6 @@ skinparam actorStyle awesome
 ' ACTORES
 ' =========================
 actor "👥 Ciudadano" as Ciudadano
-actor "👤 Analista" as Analista
 actor "👑 Administrador" as Administrador
 
 ' =========================
@@ -35,21 +34,15 @@ rectangle "🗺️ MOVE SMART - Sistema de Análisis de Movilidad" {
     usecase UC_DETALLE as "Ver Detalle de Ruta"
   }
 
-  package "👤 Funcionalidades Analista" {
-    usecase UC_CRUD_RUTA as "Gestionar Rutas (CRUD)"
-    usecase UC_PARADAS as "Gestionar Paradas"
-    usecase UC_ZONAS as "Definir Zonas Críticas"
-    usecase UC_ANALISIS as "Ejecutar Análisis de Movilidad"
-    usecase UC_SIMULACION as "Ejecutar Simulación"
-    usecase UC_METRICAS as "Comparar Métricas"
-    usecase UC_REPORTES as "Generar Reportes"
-    usecase UC_EXPORTAR as "Exportar Datos"
-  }
-
   package "👑 Funcionalidades Administrador" {
-    usecase UC_USUARIOS as "Gestionar Usuarios"
-    usecase UC_ROLES as "Asignar Roles"
-    usecase UC_ESTADO as "Cambiar Estado Usuario"
+    usecase UC_GESTIONAR_RUTAS as "Gestionar Rutas (CRUD)"
+    usecase UC_GESTIONAR_PARADAS as "Gestionar Paradas"
+    usecase UC_GESTIONAR_ZONAS as "Gestionar Zonas Críticas"
+    usecase UC_GESTIONAR_USUARIOS as "Gestionar Usuarios"
+    usecase UC_ASIGNAR_ROLES as "Asignar Roles"
+    usecase UC_CAMBIAR_ESTADO as "Cambiar Estado Usuario"
+    usecase UC_GENERAR_REPORTES as "Generar Reportes"
+    usecase UC_EXPORTAR as "Exportar Datos"
     usecase UC_AUDITORIA as "Auditar Operaciones"
     usecase UC_LOGS as "Ver Logs del Sistema"
     usecase UC_CONFIG as "Configurar Sistema"
@@ -70,21 +63,15 @@ Ciudadano --> UC_FILTRAR
 Ciudadano --> UC_DETALLE
 Ciudadano --> UC_LOGOUT
 
-Analista --> UC_LOGIN
-Analista --> UC_CRUD_RUTA
-Analista --> UC_PARADAS
-Analista --> UC_ZONAS
-Analista --> UC_ANALISIS
-Analista --> UC_SIMULACION
-Analista --> UC_METRICAS
-Analista --> UC_REPORTES
-Analista --> UC_EXPORTAR
-Analista --> UC_LOGOUT
-
 Administrador --> UC_LOGIN
-Administrador --> UC_USUARIOS
-Administrador --> UC_ROLES
-Administrador --> UC_ESTADO
+Administrador --> UC_GESTIONAR_RUTAS
+Administrador --> UC_GESTIONAR_PARADAS
+Administrador --> UC_GESTIONAR_ZONAS
+Administrador --> UC_GESTIONAR_USUARIOS
+Administrador --> UC_ASIGNAR_ROLES
+Administrador --> UC_CAMBIAR_ESTADO
+Administrador --> UC_GENERAR_REPORTES
+Administrador --> UC_EXPORTAR
 Administrador --> UC_AUDITORIA
 Administrador --> UC_LOGS
 Administrador --> UC_CONFIG
@@ -93,19 +80,18 @@ Administrador --> UC_DELETE
 Administrador --> UC_LOGOUT
 
 ' =========================
-' INCLUDE / EXTEND
+' INCLUDE
 ' =========================
-UC_FILTRAR ..> UC_VER_RUTAS : include
-UC_DETALLE ..> UC_VER_RUTAS : include
-UC_MAPA ..> UC_VER_RUTAS : include
-UC_MAPA ..> UC_VER_PARADAS : include
-UC_MAPA ..> UC_VER_ZONAS : include
-UC_EXPORTAR ..> UC_REPORTES : include
-UC_METRICAS ..> UC_ANALISIS : include
-UC_LOGS ..> UC_AUDITORIA : include
+UC_FILTRAR ..> UC_VER_RUTAS : <<include>>
+UC_DETALLE ..> UC_VER_RUTAS : <<include>>
+UC_MAPA ..> UC_VER_RUTAS : <<include>>
+UC_MAPA ..> UC_VER_PARADAS : <<include>>
+UC_MAPA ..> UC_VER_ZONAS : <<include>>
+UC_EXPORTAR ..> UC_GENERAR_REPORTES : <<include>>
+UC_LOGS ..> UC_AUDITORIA : <<include>>
 
 ' =========================
-' NOTAS DE ACTORES
+' NOTAS
 ' =========================
 note right of Ciudadano
   **Acceso: Solo Lectura**
@@ -116,22 +102,13 @@ note right of Ciudadano
   - Sin permisos de edición
 end note
 
-note right of Analista
-  **Acceso: Análisis y Gestión**
-  - Crea y edita rutas
-  - Maneja paradas
-  - Define zonas críticas
-  - Ejecuta simulaciones
-  - Analiza métricas
-end note
-
 note right of Administrador
-  **Acceso: Administración Sistema**
-  - Gestiona usuarios
-  - Asigna roles
-  - Elimina información
-  - Audita operaciones
-  - Mantiene seguridad
+  **Acceso Total del Sistema**
+  - Gestiona rutas y paradas
+  - Administra usuarios
+  - Genera reportes
+  - Configura sistema
+  - Controla seguridad y auditoría
 end note
 
 @enduml

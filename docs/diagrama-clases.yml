@@ -16,12 +16,10 @@ abstract class Usuario {
   - nombre: string
   - email: string
   - password: string
-  - rol: enum
-  - activo: boolean
+  - rol: string
   - created_at: timestamp
   + login(): boolean
   + logout(): void
-  + obtenerPerfil(): Usuario
 }
 
 class Ciudadano {
@@ -31,30 +29,23 @@ class Ciudadano {
   + navegarMapa(): void
 }
 
-class Analista {
-  + crearRuta(): Ruta
-  + actualizarRuta(): Ruta
-  + eliminarRuta(): boolean
-  + gestionarParadas(): void
-  + definirZonasCriticas(): void
-  + ejecutarAnalisis(): Analisis
-  + compararMetricas(): Comparacion
-  + generarReportes(): Reporte
-}
-
 class Administrador {
-  + gestionarUsuarios(): List<Usuario>
-  + asignarRoles(): boolean
-  + cambiarEstadoUsuario(): boolean
-  + eliminarDatos(): boolean
-  + auditarOperaciones(): List<Auditoria>
-  + verLogs(): List<Log>
-  + configurarSistema(): void
-  + realizarBackup(): void
+  + crearUsuario(): Usuario
+  + editarUsuario(): Usuario
+  + eliminarUsuario(): boolean
+  + crearRuta(): Ruta
+  + editarRuta(): Ruta
+  + eliminarRuta(): boolean
+  + crearZonaCritica(): ZonaCritica
+  + editarZonaCritica(): ZonaCritica
+  + eliminarZonaCritica(): boolean
+  + crearParada(): Parada
+  + editarParada(): Parada
+  + eliminarParada(): boolean
+  + generarReporte(): Reporte
 }
 
 Usuario <|-- Ciudadano
-Usuario <|-- Analista
 Usuario <|-- Administrador
 
 ' =========================
@@ -64,13 +55,10 @@ class Ruta {
   - id: int
   - nombre: string
   - tipo: string
-  - origen: string
-  - destino: string
+  - color_hex: string
   - distancia_km: decimal
   - tiempo_estimado_min: int
-  - color_hex: string
-  - estado: enum
-  + calcularDistancia(): decimal
+  - eficiencia_porcentaje: decimal
   + calcularTiempo(): int
 }
 
@@ -81,26 +69,15 @@ class Parada {
   - latitud: decimal
   - longitud: decimal
   - orden: int
-  + obtenerCoordenadas(): object
 }
 
 class ZonaCritica {
   - id: int
   - nombre: string
-  - nivel_congestion: enum
+  - nivel_congestion: string
   - latitud: decimal
   - longitud: decimal
-  - color_hex: string
-  + actualizarNivel(): void
-}
-
-class Vehiculo {
-  - id: int
-  - ruta_id: int
-  - placa: string
-  - capacidad_total: int
-  - estado: enum
-  + cambiarEstado(): void
+  - descripcion_impacto: string
 }
 
 class Metrica {
@@ -116,7 +93,7 @@ class Metrica {
 
 class Reporte {
   - id: int
-  - tipo: enum
+  - tipo: string
   - periodo_inicio: date
   - periodo_fin: date
   - generado_por: int
@@ -128,10 +105,8 @@ class Reporte {
 ' RELACIONES
 ' =========================
 Ruta "1" o-- "*" Parada
-Ruta "1" o-- "*" Vehiculo
-Ruta "1" o-- "*" Metrica
 Ruta "*" -- "*" ZonaCritica
-Analista "1" -- "*" Ruta : gestiona
+Ruta "1" o-- "*" Metrica
 Administrador "1" -- "*" Usuario : administra
 Reporte "*" -- "1" Usuario : generado_por
 
@@ -146,20 +121,10 @@ note bottom of Ciudadano
   - No modifica información
 end note
 
-note bottom of Analista
-  **Acceso Operativo: CRUD**
-  - Secretaría de Movilidad
-  - Empresas operadoras
-  - Planeadores urbanos
-  - Panel interno React
-  - CRUD + Análisis
-end note
-
 note bottom of Administrador
   **Acceso Total: Administración**
   - Equipo técnico / TI
   - Desarrolladores del sistema
-  - No toma decisiones de movilidad
   - Administra usuarios y seguridad
 end note
 
